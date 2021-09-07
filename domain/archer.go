@@ -35,6 +35,8 @@ func NewArcher(totalNum uint64, id uint64) Archer {
 
 func (a *archer) HearFromNeighborsForMessage(ctx context.Context, msgStr string) error {
 
+	fmt.Println("Message is received by Archer ", a.ArcherID, "at time ", time.Now())
+
 	duration := a.TotalNumberOfArchers - a.ArcherID
 
 	switch msgStr {
@@ -42,17 +44,19 @@ func (a *archer) HearFromNeighborsForMessage(ctx context.Context, msgStr string)
 		{
 			if duration == 1 {
 				// the last archer
-				a.Fire(duration)
+				go a.Fire(duration)
 
 				return nil
 
 			} else {
+
+				go a.Fire(duration)
+
 				err := a.BroadcastMessageToNeighbors(ctx, msgStr)
 				if err != nil {
 					return err
 				}
 
-				a.Fire(duration)
 				return nil
 			}
 		}
@@ -69,13 +73,13 @@ func (a *archer) BroadcastMessageToNeighbors(ctx context.Context, msgStr string)
 		return errors.New("there is no right archer to broadcast the message to it")
 	}
 
+	oneSecond := time.Second
+	time.Sleep(oneSecond)
+
 	err := a.RightNeighbor.HearFromNeighborsForMessage(ctx, msgStr)
 	if err != nil {
 		return err
 	}
-
-	oneSecond := time.Second
-	time.Sleep(oneSecond)
 
 	return nil
 }
@@ -84,8 +88,7 @@ func (a *archer) Fire(duration uint64) {
 	durationInSecond := time.Duration(duration)*time.Second
 	time.Sleep(durationInSecond)
 
-	fmt.Println("this is the fire message from archer ", a.ArcherID)
-	fmt.Println(time.Now())
+	fmt.Println("this is the fire message from archer ", a.ArcherID, "and the time is ", time.Now())
 }
 
 func (a *archer) AddLeftNeighbor(leftNeighbor Archer)  {

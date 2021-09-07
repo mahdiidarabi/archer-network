@@ -4,11 +4,19 @@ import (
 	"context"
 	"fmt"
 	"github.com/mahdiidarabi/archer-network/domain"
+	"os"
+	"strconv"
+	"time"
 )
 
 func main()  {
+	args := os.Args
 
-	totalNumberOfArchers := 10
+	totalNumberOfArchersStr := args[1]
+	totalNumberOfArchers, err := strconv.Atoi(totalNumberOfArchersStr)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	archers := make([]domain.Archer, 0, totalNumberOfArchers)
 
@@ -31,9 +39,11 @@ func main()  {
 
 	msgStr := "fire-1"
 
-	err := archers[0].HearFromNeighborsForMessage(context.Background(), msgStr)
+	err = archers[0].HearFromNeighborsForMessage(context.Background(), msgStr)
 	if err != nil {
 		fmt.Println(err)
 	}
 
+	sleepSeconds := time.Duration(2)*time.Second
+	time.Sleep(sleepSeconds)
 }
