@@ -37,6 +37,15 @@ func main()  {
 		archers[i].AddRightNeighbor(archers[i + 1])
 	}
 
+	waitToStartMessagingStr := args[2]
+	waitToStartMessaging, err := strconv.Atoi(waitToStartMessagingStr)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	waitForMessagingDuration := time.Duration(waitToStartMessaging)*time.Second
+	time.Sleep(waitForMessagingDuration)
+
 	msgStr := "fire-1"
 
 	err = archers[0].HearFromNeighborsForMessage(context.Background(), msgStr)
